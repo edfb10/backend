@@ -1,0 +1,356 @@
+{% extends 'layout.html' %}
+
+{% block titulo %}
+Adultos Mayores
+{% endblock %}
+
+{% block estilos %}
+<style>
+    /* Estilos específicos para esta plantilla */
+    .adultos-container {
+        background-color: #E9F7EF;
+        /* Fondo verde claro para esta sección */
+        padding: 20px;
+        /* Espaciado interno */
+        border-radius: 10px;
+        /* Bordes redondeados */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        /* Sombra sutil */
+        margin: 20px;
+        /* Margen para separar del resto del contenido */
+        position: relative;
+        /* Para las flores animadas */
+        overflow: hidden;
+        /* Oculta las flores que se mueven fuera del contenedor */
+    }
+
+    .adultos-container h2 {
+        text-align: center;
+        /* Centra el título */
+        color: #000000;
+        /* Color negro para los títulos */
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+        animation: fadeIn 1s ease;
+    }
+
+    .hidden {
+        display: none;
+    }
+
+    .adultos-form {
+        max-width: 600px;
+        margin: 0 auto;
+        /* Centrar el formulario */
+        padding: 20px;
+        border: 1px solid #BDC3C7;
+        border-radius: 10px;
+        background-color: #ffffff;
+        /* Fondo blanco */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        animation: slideIn 0.5s ease;
+    }
+
+    .adultos-form label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+    }
+
+    .adultos-form input[type="text"],
+    .adultos-form textarea,
+    .adultos-form input[type="file"] {
+        width: calc(100% - 20px);
+        padding: 10px;
+        margin-bottom: 15px;
+        border: 1px solid #BDC3C7;
+        border-radius: 5px;
+        transition: border-color 0.3s;
+    }
+
+    .adultos-form input[type="text"]:focus,
+    .adultos-form textarea:focus {
+        border-color: #27AE60;
+        /* Color verde al hacer foco */
+        outline: none;
+        /* Sin contorno */
+    }
+
+    .adultos-form button {
+        background-color:
+            #00712D;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        padding: 10px 15px;
+        cursor: pointer;
+        transition: background-color 0.3s, transform 0.3s;
+        width: 100%;
+    }
+
+    .adultos-form button:hover {
+        background-color: #219653;
+        /* Color verde más oscuro al pasar el mouse */
+        transform: scale(1.05);
+    }
+
+    /* Estilos para la lista de adultos mayores */
+    .adultos-list {
+        list-style-type: none;
+        padding: 0;
+        display: flex;
+        flex-wrap: wrap;
+        /* Permitir que los elementos se ajusten */
+        justify-content: center;
+        /* Centrar los elementos */
+    }
+
+    .adultos-list li {
+        background-color: #ffffff;
+        border: 1px solid #BDC3C7;
+        border-radius: 10px;
+        margin: 10px;
+        padding: 15px;
+        width: 250px;
+        /* Ancho fijo para las tarjetas */
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s;
+        text-align: center;
+        /* Centrar el texto */
+    }
+
+    .adultos-list li:hover {
+        transform: translateY(-5px);
+        /* Elevar la tarjeta al pasar el mouse */
+    }
+
+    .adultos-list img {
+        max-width: 100%;
+        /* Mantener la imagen dentro del contenedor */
+        border-radius: 10px;
+    }
+
+    /* Animaciones */
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+
+        to {
+            opacity: 1;
+        }
+    }
+
+    @keyframes slideIn {
+        from {
+            transform: translateY(-20px);
+            opacity: 0;
+        }
+
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+
+    /* Flores animadas */
+    .flower {
+        position: absolute;
+        animation: moveFlower 5s infinite alternate;
+        opacity: 0.8;
+    }
+
+    @keyframes moveFlower {
+        0% {
+            transform: translateY(0) scale(1);
+        }
+
+        100% {
+            transform: translateY(-20px) scale(1.1);
+        }
+    }
+
+    /* Flores en posiciones aleatorias */
+    .flower:nth-child(1) {
+        top: 10%;
+        left: 10%;
+    }
+
+    .flower:nth-child(2) {
+        top: 20%;
+        left: 30%;
+    }
+
+    .flower:nth-child(3) {
+        top: 30%;
+        left: 50%;
+    }
+
+    .flower:nth-child(4) {
+        top: 15%;
+        left: 70%;
+    }
+
+    .flower:nth-child(5) {
+        top: 25%;
+        left: 80%;
+    }
+
+    /* Estilo para los botones de acción */
+    .action-buttons {
+        display: flex;
+        /* Hacer que los botones estén en línea */
+        justify-content: center;
+        /* Centrar los botones */
+        margin-top: 10px;
+        /* Separar de los elementos anteriores */
+    }
+
+    .delete-button,
+    .edit-button {
+        background-color: #00712D;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        padding: 40px 36px;
+        /* Aumentar padding para hacer más grandes los botones */
+        cursor: pointer;
+        transition: background-color 0.3s, transform 0.3s;
+        margin: 0 5px;
+        /* Añadir margen entre los botones */
+        width: 70%;
+        /* Ajustar el ancho para dos botones */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+
+    .delete-button:hover {
+        background-color: #C0392B;
+        transform: scale(1.05);
+    }
+
+    .edit-button:hover {
+        background-color: #219653;
+        transform: scale(1.05);
+    }
+</style>
+{% endblock %}
+
+{% block contenido %}
+<div class="adultos-container">
+    <h2>Registrar Adulto Mayor</h2>
+
+    <!-- Flores animadas -->
+    <div class="flower"
+        style="background-image: url('https://via.placeholder.com/50x50/FFB6C1/000000?text=🌸'); width: 50px; height: 50px;">
+    </div>
+    <div class="flower"
+        style="background-image: url('https://via.placeholder.com/50x50/FFD700/000000?text=🌼'); width: 50px; height: 50px;">
+    </div>
+    <div class="flower"
+        style="background-image: url('https://via.placeholder.com/50x50/FF69B4/000000?text=🌺'); width: 50px; height: 50px;">
+    </div>
+    <div class="flower"
+        style="background-image: url('https://via.placeholder.com/50x50/ADFF2F/000000?text=🌻'); width: 50px; height: 50px;">
+    </div>
+    <div class="flower"
+        style="background-image: url('https://via.placeholder.com/50x50/98FB98/000000?text=🌼'); width: 50px; height: 50px;">
+    </div>
+
+    <!-- Formulario para registrar adultos mayores -->
+    <form action="{{ url_for('adultos_mayores') }}" method="post" enctype="multipart/form-data" class="adultos-form">
+        <label for="nombre">Nombre del Adulto Mayor:</label>
+        <input type="text" name="nombre" id="nombre" required>
+
+        <label for="descripcion">Descripción:</label>
+        <textarea name="descripcion" id="descripcion" required></textarea>
+
+        <label for="imagen">Imagen:</label>
+        <input type="file" name="imagen" id="imagen" accept="image/*" required>
+
+        <button type="submit">Agregar Adulto Mayor</button>
+    </form>
+
+    <hr>
+    <!-- Formulario para editar adultos mayores -->
+    <form action="{{ url_for('editar_adulto') }}" method="post" class="hidden" id="form-editar"
+        enctype="multipart/form-data">
+
+        <h3>Editar Adulto Mayor</h3>
+        <form action="{{ url_for('editar_adulto') }}" method="post" enctype="multipart/form-data">
+            <input type="hidden" id="adulto-id" name="adulto_id">
+
+            <label for="editar-nombre">Nombre del Adulto Mayor:</label>
+            <input type="text" name="nombre" id="editar-nombre" required>
+
+            <label for="editar-descripcion">Descripción:</label>
+            <textarea name="descripcion" id="editar-descripcion" required></textarea>
+
+            <label for="editar-imagen">Nueva Imagen (opcional):</label>
+            <input type="file" name="imagen" id="editar-imagen" accept="image/*">
+
+            <button type="submit">Guardar Cambios</button>
+        </form>
+</div>
+
+<h2 class="text-center">Adultos Mayores Registrados</h2>
+<ul class="adultos-list">
+    {% for adulto in adultos %}
+    <li onclick="mostrarPlantas('{{ adulto.id }}')">
+        <h3>{{ adulto.nombre }}</h3>
+        <p>{{ adulto.descripcion }}</p>
+        <img src="{{ adulto.imagen }}" alt="Imagen de {{ adulto.nombre }}">
+        <!-- Botones de acción -->
+        <br>
+        <br>
+        <!-- Botón Eliminar -->
+        <div class="action-buttons"> <!-- Contenedor para botones de acción -->
+            <button class="delete-button" onclick="confirmDelete('{{ adulto.id }}')" style="border: none; background: transparent;">
+                <img src="{{ url_for('static', filename='imagenes/borrar.png') }}" alt="Eliminar" style="width: 100px; height: 40px;"> <!-- Aumentar tamaño de la imagen -->
+            </button>
+            <button class="edit-button" onclick="mostrarFormularioEditar('{{ adulto.id }}', '{{ adulto.nombre }}', '{{ adulto.descripcion }}')" style="border: none; background: transparent;">
+                <img src="{{ url_for('static', filename='imagenes/edit.png') }}" alt="Editar" style="width: 100px; height: 40px;"> <!-- Aumentar tamaño de la imagen -->
+            </button>
+        </div>        
+        {% endfor %}
+</ul>
+
+<div class="adultos-container">
+
+</div>
+
+</div>
+{% endblock %}
+
+{% block js %}
+<script>
+    window.onload = function () {
+        const listItems = document.querySelectorAll('.adultos-list li');
+        listItems.forEach((item, index) => {
+            item.style.animation = `fadeIn 0.5s ease forwards ${index * 0.1}s`; // Delay por índice
+        });
+    };
+
+    function confirmDelete(adultoId) {
+        if (confirm("¿Estás seguro de que deseas eliminar a este adulto mayor?")) {
+            // Redirigir a la ruta de eliminación con el ID del adulto
+            window.location.href = "{{ url_for('eliminar_adulto', adulto_id='') }}" + adultoId;
+        }
+    }
+
+    function mostrarFormularioEditar(id, nombre, descripcion) {
+        // Mostrar el formulario de edición
+        document.getElementById('form-editar').style.display = 'block';
+
+        // Llenar el formulario con los datos actuales del adulto mayor
+        document.getElementById('adulto-id').value = id;
+        document.getElementById('editar-nombre').value = nombre;
+        document.getElementById('editar-descripcion').value = descripcion;
+
+        // Enfocar el campo de nombre para edición
+        document.getElementById('editar-nombre').focus();
+    }
+
+</script>
+{% endblock %}

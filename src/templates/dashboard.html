@@ -1,0 +1,56 @@
+{% extends "./layout.html" %}
+
+
+{% block titulo %}
+Aula
+{% endblock %}
+
+
+{% block estilos %}
+<style>
+    .parrafo{
+        color: aliceblue;
+    }
+</style>
+
+{% endblock %}
+
+{% block contenido %}
+<div class="container-fluid">
+    <!-- Aquí va el contenido de tu página -->
+    <div class="home bg-body-secondary text-center py-4 ">
+        <h2 class=" titulo fw-bold text-success">Ambiente Virtual: Un Viaje Terapéutico y Social
+            para Adultos Mayores</h2>
+        <p class="lead text-body-emphasis ">¡Bienvenidos al proyecto de Horticultura Virtual para
+            Adultos Mayores en Girardot! Sumérgete en actividades terapéuticas, conecta con otros
+            residentes y expertos, y descubre un espacio de crecimiento y compañerismo a través del
+            cuidado de plantas y jardines.</p>
+        <img src="{{ url_for('static', filename='imagenes/aula.jpg') }}" alt="Imagen de la Universidad de Cundinamarca"
+            class="img-fluid text-center">
+        <img src="https://www.ucundinamarca.edu.co/images/ucundinamarca/medit-nuevo.jpg"
+            alt="Imagen del Modelo Educativo Digital Transmoderno (MEDIT)" class="img-fluid">
+    </div>
+    <div class="text-center">
+        <h2 class="fw-bold titulo text-success">Modelo Educativo Digital Transmoderno (MEDIT)</h2>
+    </div>
+
+    <div class="courses   text-center">
+        <p class="parrafo lead text-body-emphasis ">El Modelo Educativo Digital Transmoderno
+            (MEDIT) es una propuesta que busca transformar la educación superior
+            tradicional.
+            El MEDIT se enfoca en formar una persona transhumana, para la vida, los
+            valores
+            democráticos, la civilidad y la libertad. Esto significa pasar de una
+            educación para
+            el hacer y el trabajo, a una educación para el ser.</p>
+        
+    </div>
+</div>
+
+
+{% endblock %}
+
+
+
+{% block js %}
+{% endblock %}

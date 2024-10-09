@@ -1,0 +1,221 @@
+{% extends 'layout.html' %}
+
+{% block titulo %}
+Línea del Tiempo
+{% endblock %}
+
+{% block estilos %}
+<style>
+    body {
+        background-color: #FFFFFF; /* Fondo blanco */
+        font-family: 'Arial', sans-serif;
+        overflow: hidden; /* Evitar scroll */
+    }
+
+    h1 {
+        text-align: center;
+        color: #388E3C;
+        margin: 20px 0;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+        color: #4CAF50;
+        text-align: center;
+        margin-top: 30px;
+    }
+
+    .linea-timeline {
+        display: flex;
+        flex-direction: column;
+        margin: 0 auto;
+        max-width: 800px;
+    }
+
+    /* Estilos para el carrusel */
+    .icon-carousel {
+        display: flex;
+        overflow: hidden; /* Ocultar el desbordamiento */
+        position: relative;
+        white-space: nowrap; /* Evitar saltos de línea */
+    }
+
+    .icon-carousel img {
+        max-height: 80px; /* Limitar la altura de las imágenes de los iconos */
+        margin: 0 15px; /* Espaciado entre los iconos */
+    }
+
+    .scroll-container {
+        display: flex;
+        animation: scroll 30s linear infinite; /* Animación de desplazamiento */
+    }
+
+    @keyframes scroll {
+        0% {
+            transform: translateX(0);
+        }
+        100% {
+            transform: translateX(-100%); /* Desplazar toda la longitud */
+        }
+    }
+
+    .adulto {
+        display: flex;
+        align-items: flex-start;
+        border: 2px solid #BDBDBD;
+        padding: 15px;
+        margin-bottom: 20px;
+        border-radius: 10px;
+        background-color: #ffffff;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s, box-shadow 0.3s, width 0.3s, height 0.3s;
+        cursor: pointer;
+        width: 250px;
+    }
+
+    .adulto.expanded {
+        width: 100%;
+        height: auto;
+    }
+
+    .adulto:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    }
+
+    .info-adulto {
+        flex: 1;
+        padding-right: 20px;
+    }
+
+    .info-planta {
+        flex: 2;
+        display: none;
+        padding-top: 10px;
+        animation: fadeIn 0.5s ease-in-out;
+    }
+
+    .info-planta ul {
+        list-style-type: none;
+        padding: 0;
+    }
+
+    .info-planta ul li {
+        margin-bottom: 10px;
+        border-bottom: 1px dashed #BDBDBD;
+        padding-bottom: 10px;
+        font-size: 14px;
+        color: #555;
+    }
+
+    .info-planta img {
+        max-width: 150px;
+        border-radius: 10px;
+        transition: transform 0.3s;
+    }
+
+    .info-planta img:hover {
+        transform: scale(1.1);
+    }
+
+    .img-adulto {
+        max-width: 150px;
+        border-radius: 10px;
+        transition: transform 0.3s;
+    }
+
+    .img-adulto:hover {
+        transform: scale(1.05);
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
+
+    @media (max-width: 600px) {
+        .adulto {
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .adulto .info-adulto,
+        .adulto .info-planta {
+            text-align: center;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block contenido %}
+<h1>Línea del Tiempo 🌱🌼</h1>
+
+
+<div class="icon-carousel">
+    <div class="scroll-container">
+        <img src="{{ url_for('static', filename='imagenes/teacher-desk.png') }}" alt="Teacher Icon" />
+<img src="{{ url_for('static', filename='imagenes/vase.png') }}" alt="Vase Icon" />
+<img src="{{ url_for('static', filename='imagenes/lily.png') }}" alt="Lily Icon" />
+<img src="{{ url_for('static', filename='imagenes/science-and-tech.png') }}" alt="Science and Tech Icon" />
+<img src="{{ url_for('static', filename='imagenes/teachers-day.png') }}" alt="Teacher day Icon" />
+<img src="{{ url_for('static', filename='imagenes/indoor-plants.png') }}" alt="Indoor Plants Icon" />
+<img src="{{ url_for('static', filename='imagenes/eco-battery.png') }}" alt="Ecology Icon" />
+<img src="{{ url_for('static', filename='imagenes/abuelos.png') }}" alt="Grandparents Icon" />
+<img src="{{ url_for('static', filename='imagenes/water-lily.png') }}" alt="Water Lily Icon" />
+<img src="{{ url_for('static', filename='imagenes/teacher.png') }}" alt="Teachers Day Icon" />
+<img src="{{ url_for('static', filename='imagenes/enfe.png') }}" alt="Occupational Therapy Icon" />
+<img src="{{ url_for('static', filename='imagenes/house-plants.png') }}" alt="House Plants Icon" />
+<img src="{{ url_for('static', filename='imagenes/terrarium.png') }}" alt="Terrarium Icon" />
+<img src="{{ url_for('static', filename='imagenes/data-server.png') }}" alt="Data Server Icon" />
+<img src="{{ url_for('static', filename='imagenes/server.png') }}" alt="Server Icon" />
+<img src="{{ url_for('static', filename='imagenes/floral.png') }}" alt="Floral Icon" />
+<img src="{{ url_for('static', filename='imagenes/tech.png') }}" alt="Technical Icon" />
+<img src="{{ url_for('static', filename='imagenes/studen.png') }}" alt="Student Visa Icon" />
+
+    </div>
+</div>
+
+<h2>Líneas del Tiempo Existentes 🌿</h2>
+{% if lineas_tiempo %}
+<div class="linea-timeline">
+    {% for linea in lineas_tiempo %}
+    <div class="adulto" onclick="togglePlantas(this)">
+        <div class="info-adulto">
+            <h3 class="text-center">{{ linea.adulto.nombre }}</h3>
+            <p>{{ linea.adulto.descripcion }}</p>
+            <img src="{{ linea.adulto.imagen }}" alt="Imagen del Adulto Mayor" class="img-adulto">
+        </div>
+        <div class="info-planta">
+            <h4 class="text-center">Plantas</h4>
+            <ul>
+                {% for planta in linea.plantas %}
+                <li>
+                    <p><strong>Nombre:</strong> {{ planta.nombre_planta }}</p>
+                    <p><strong>Descripción:</strong> {{ planta.descripcion_etapa }}</p>
+                    <p><strong>Fecha de Registro:</strong> {{ planta.fecha_registro }}</p>
+                    <img src="{{ planta.imagen }}" alt="Imagen de la Planta">
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<p class="mensaje">No hay líneas del tiempo registradas.</p>
+{% endif %}
+{% endblock %}
+
+{% block js %}
+<script>
+    function togglePlantas(adulto) {
+        const plantas = adulto.querySelector('.info-planta');
+        plantas.style.display = plantas.style.display === "block" ? "none" : "block";
+        adulto.classList.toggle('expanded');
+    }
+</script>
+{% endblock %}

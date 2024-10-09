@@ -1,0 +1,492 @@
+{% extends 'layout.html' %}
+
+{% block titulo %}
+Evolución de Plantas
+{% endblock %}
+
+{% block estilos %}
+<style>
+    /* Estilos específicos para esta plantilla */
+    body {
+        font-family: 'Arial', sans-serif;
+        /* Tipo de letra moderno */
+        background-color: #f0f4f8;
+        /* Fondo general suave */
+        color: #333;
+        /* Color del texto */
+    }
+
+    .plantas-container {
+        background-color: #E8F5E9;
+        /* Fondo verde suave */
+        padding: 20px;
+        border-radius: 15px;
+        /* Bordes redondeados */
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        margin: 20px;
+        position: relative;
+        /* Para las gotas de agua animadas */
+        overflow: hidden;
+        /* Ocultar elementos que se mueven fuera del contenedor */
+    }
+
+    h2 {
+        text-align: center;
+        color: black;
+        /* Título en negro */
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        animation: fadeIn 1s ease;
+        font-size: 2.5em;
+        /* Tamaño de fuente más grande */
+        margin-bottom: 20px;
+    }
+
+    button {
+        background-color: #00712D;
+        /* Botón verde */
+        color: white;
+        border: none;
+        border-radius: 10px;
+        /* Bordes más suaves */
+        padding: 12px 20px;
+        cursor: pointer;
+        transition: background-color 0.3s, transform 0.3s;
+        margin: 10px;
+        display: inline-block;
+        font-size: 18px;
+        /* Tamaño de fuente */
+        font-weight: bold;
+        /* Texto en negrita */
+    }
+
+    button:hover {
+        background-color: #6EC207;
+        /* Color verde más claro al pasar el mouse */
+        transform: scale(1.1);
+    }
+
+    form {
+        text-align: center;
+        margin-bottom: 30px;
+        /* Espacio entre formularios */
+    }
+
+    .etapa-item {
+        background-color: #ffffff;
+        /* Fondo blanco para cada etapa */
+        border: 1px solid #BDBDBD;
+        /* Borde gris claro */
+        border-radius: 15px;
+        margin: 10px 0;
+        padding: 10px;
+        /* Espaciado reducido */
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+        transition: transform 0.3s;
+        text-align: left;
+        /* Alinear a la izquierda */
+        font-size: 1.1em;
+        /* Aumentar tamaño de texto de las plantas */
+    }
+
+    .etapa-item:hover {
+        transform: translateY(-5px);
+        /* Elevar la etapa al pasar el mouse */
+    }
+
+    .etapa-item img {
+        max-width: 50%;
+        /* Tamaño reducido para las imágenes */
+        border-radius: 15px;
+        display: block;
+        /* Para centrar la imagen */
+        margin-left: auto;
+        /* Centrar imagen */
+        margin-right: auto;
+        /* Centrar imagen */
+    }
+
+    /* Animaciones */
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+
+        to {
+            opacity: 1;
+        }
+    }
+
+    /* Gotas de agua animadas */
+    .gota {
+        position: absolute;
+        background-color: #4CAF50;
+        /* Color verde para gotas */
+        border-radius: 50%;
+        /* Hacer que las gotas sean circulares */
+        opacity: 0.7;
+        animation: caer 3s infinite;
+    }
+
+    @keyframes caer {
+        0% {
+            transform: translateY(-50px);
+            opacity: 1;
+        }
+
+        100% {
+            transform: translateY(200px);
+            opacity: 0;
+            /* Hacer que desaparezca al caer */
+        }
+    }
+
+    /* Posiciones aleatorias para las gotas */
+    .gota:nth-child(1) {
+        width: 15px;
+        height: 15px;
+        left: 10%;
+        animation-delay: 0s;
+    }
+
+    .gota:nth-child(2) {
+        width: 20px;
+        height: 20px;
+        left: 30%;
+        animation-delay: 0.5s;
+    }
+
+    .gota:nth-child(3) {
+        width: 10px;
+        height: 10px;
+        left: 60%;
+        animation-delay: 1s;
+    }
+
+    .gota:nth-child(4) {
+        width: 18px;
+        height: 18px;
+        left: 80%;
+        animation-delay: 1.5s;
+    }
+
+    .gota:nth-child(5) {
+        width: 15px;
+        height: 15px;
+        left: 50%;
+        animation-delay: 2s;
+    }
+
+    /* Estilo para la lista de plantas */
+    .plantas-lista {
+        display: none;
+        /* Ocultar por defecto */
+        margin-top: 10px;
+    }
+
+    .adulto-mayor {
+        cursor: pointer;
+        /* Cambiar el cursor al pasar sobre el nombre */
+        color: #00712D;
+        /* Color del nombre */
+        background-color: #C8E6C9;
+        /* Fondo suave para el nombre del adulto mayor */
+        padding: 10px;
+        border-radius: 5px;
+        /* Bordes redondeados */
+        margin: 5px 0;
+    }
+
+    .adulto-mayor:hover {
+        text-decoration: underline;
+        /* Subrayar al pasar el mouse */
+        background-color: #B2DFDB;
+        /* Cambio de fondo al pasar el mouse */
+    }
+
+    /* Estilo para centrar texto en las etapas */
+    .etapa-titulo {
+        text-align: center;
+        /* Centrar texto */
+    }
+
+    .formulario-plantas {
+        background-color: #ffffff;
+        /* Fondo blanco */
+        border-radius: 10px;
+        /* Bordes redondeados */
+        padding: 20px;
+        /* Espaciado interno */
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        /* Sombra suave */
+        max-width: 600px;
+        /* Ancho máximo del formulario */
+        margin: 0 auto;
+        /* Centrar el formulario */
+    }
+
+    label {
+        font-weight: bold;
+        /* Texto en negrita para etiquetas */
+        display: block;
+        /* Que cada etiqueta esté en una nueva línea */
+        margin-bottom: 5px;
+        /* Espaciado inferior */
+    }
+
+    select,
+    input[type="text"],
+    textarea {
+        width: 100%;
+        /* Ancho completo para los campos */
+        padding: 10px;
+        /* Espaciado interno */
+        border-radius: 5px;
+        /* Bordes redondeados */
+        border: 1px solid #BDBDBD;
+        /* Borde gris claro */
+        box-sizing: border-box;
+        /* Incluir padding y border en el tamaño total */
+        margin-bottom: 15px;
+        /* Espaciado inferior entre campos */
+        font-size: 16px;
+        /* Tamaño de fuente */
+    }
+
+    textarea {
+        height: 100px;
+        /* Altura específica para el textarea */
+        resize: none;
+        /* Deshabilitar el redimensionamiento */
+    }
+
+    .boton-agregar {
+        background-color: #4CAF50;
+        /* Color verde */
+        color: white;
+        /* Texto blanco */
+        border: none;
+        /* Sin borde */
+        border-radius: 10px;
+        /* Bordes redondeados */
+        padding: 12px 20px;
+        /* Espaciado interno */
+        cursor: pointer;
+        /* Cambiar cursor a mano */
+        transition: background-color 0.3s, transform 0.3s;
+        /* Transición suave */
+        font-size: 18px;
+        /* Tamaño de fuente */
+    }
+
+    .boton-agregar:hover {
+        background-color: #6EC207;
+        /* Color verde más claro al pasar el mouse */
+        transform: scale(1.05);
+        /* Aumentar tamaño ligeramente */
+    }
+
+    /* Estilo para los botones de acción */
+    .action-buttons {
+        display: flex;
+        /* Hacer que los botones estén en línea */
+        justify-content: center;
+        /* Centrar los botones */
+        margin-top: 10px;
+        /* Separar de los elementos anteriores */
+    }
+
+    .delete-button,
+    .edit-button {
+        background-color: transparent;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        padding: 10px 100px;
+        /* Ajustar el padding para hacerlos más pequeños */
+        cursor: pointer;
+        transition: background-color 0.3s, transform 0.3s;
+        margin: 0 5px;
+        /* Añadir margen entre los botones */
+        width: auto;
+        /* Ajustar ancho automático para que se adapten al contenido */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        /* Tamaño de fuente más pequeño */
+        font-weight: bold;
+        /* Mantener texto en negrita */
+    }
+
+    .delete-button:hover {
+        background-color: #C0392B;
+        transform: scale(1.05);
+    }
+
+    .edit-button:hover {
+        background-color: #219653;
+        transform: scale(1.05);
+    }
+
+
+    /* Estilo para el formulario de edición */
+    .edit-form {
+        display: none;
+        /* Ocultar por defecto */
+        margin-top: 15px;
+        /* Espaciado superior */
+        padding: 15px;
+        background-color: #f9f9f9;
+        /* Fondo gris claro */
+        border-radius: 5px;
+        /* Bordes redondeados */
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        /* Sombra sutil */
+    }
+</style>
+{% endblock %}
+
+{% block contenido %}
+<div class="plantas-container">
+    <h2>Gestión de Plantas</h2>
+
+    <!-- Gotas de agua animadas -->
+    <div class="gota"></div>
+    <div class="gota"></div>
+    <div class="gota"></div>
+    <div class="gota"></div>
+    <div class="gota"></div>
+
+    <!-- Botones para cambiar entre modos -->
+    <form action="{{ url_for('plantas') }}" method="post">
+        <button type="submit" name="modo" value="registro">Registrar Planta</button>
+        <button type="submit" name="modo" value="ver_plantas">Ver Plantas Registradas</button>
+    </form>
+
+    {% if modo == 'registro' %}
+    <h3>Agregar Evolución de Plantas</h3>
+
+    <!-- Formulario para seleccionar un adulto mayor y agregar una planta -->
+    <form action="{{ url_for('plantas') }}" method="post" enctype="multipart/form-data" class="formulario-plantas">
+        <label for="adulto_id">👴 Seleccionar Adulto Mayor:</label>
+        <select name="adulto_id" id="adulto_id" required>
+            <option value="">Seleccione un adulto mayor</option>
+            {% for adulto in adultos %}
+            <option value="{{ adulto.id }}" {% if adulto.id==seleccionado_id %}selected{% endif %}>{{ adulto.nombre }}
+            </option>
+            {% endfor %}
+        </select><br><br>
+
+        <label for="nombre_planta">🌱 Nombre de la Planta:</label>
+        <input type="text" name="nombre_planta" id="nombre_planta" required
+            placeholder="Escribe el nombre de la planta..."><br><br>
+
+        <label for="descripcion_etapa">📝 Descripción de la Etapa:</label>
+        <textarea name="descripcion_etapa" id="descripcion_etapa" required
+            placeholder="Describe la etapa de la planta..."></textarea><br><br>
+
+        <label for="imagen_etapa">📷 Imagen de la Etapa:</label>
+        <input type="file" name="imagen_etapa" id="imagen_etapa" accept="image/*" required><br><br>
+
+        <input type="hidden" name="modo" value="registro">
+        <button type="submit" class="boton-agregar">✨ Agregar Etapa</button>
+    </form>
+
+    {% elif modo == 'ver_plantas' %}
+    <h3>Plantas Registradas</h3>
+
+    <!-- Mostrar todos los adultos mayores y las plantas asociadas -->
+    {% for adulto_id, datos in plantas.items() %}
+    <div class="adulto-mayor" onclick="togglePlantas('{{ adulto_id }}')">
+        👵-👴 {{ datos.adulto.nombre }}
+    </div>
+    <div class="plantas-lista" id="plantas-{{ adulto_id }}">
+        {% if datos.etapas %}
+        <ul>
+            {% for etapa in datos.etapas %}
+            <li class="etapa-item">
+                <strong class="etapa-titulo">{{ etapa.nombre_planta }}<br></strong>
+                <img src="{{ etapa.imagen }}" alt="Imagen de la etapa">
+                <small>📅⌚{{ etapa.fecha_registro }}</small><br>
+                <br>
+                {{ etapa.descripcion_etapa }}<br>
+                <hr>
+                <!-- Botones de editar y eliminar -->
+                <div class="action-buttons">
+                    <!-- Botones de editar y eliminar etapa -->
+                    <form action="{{ url_for('eliminar_etapa', adulto_id=datos.adulto.id, etapa_id=etapa.id) }}"
+                        method="post" onclick="return  confirmDeletion();">
+                        <button type="submit" class="delete-button" onsubmit="showSuccessMessage();">
+                            <img src="{{ url_for('static', filename='imagenes/borrar.png') }}" alt="Eliminar"
+                                style="width: 80px; height: 60px;"> <!-- Aumentar tamaño de la imagen -->
+                        </button>
+                    </form>
+                    <br>
+                    <br>
+                    <br>
+                    <button type="submit" class="edit-button"
+                        onclick="toggleEditForm('{{ etapa.id }}', '{{ etapa.nombre_planta }}', '{{ etapa.descripcion_etapa }}')">
+                        <img src="{{ url_for('static', filename='imagenes/edit.png') }}" alt="Editar"
+                            style="width: 90px; height: 50px;"> <!-- Aumentar tamaño de la imagen -->
+                    </button>
+                </div>
+                <!-- Formulario oculto de edición -->
+                <div class="edit-form" id="edit-form-{{ etapa.id }}" style="display: none;">
+                    <form action="{{ url_for('editar_etapa', etapa_id=etapa.id, adulto_id=datos.adulto.id) }}"
+                        method="post" enctype="multipart/form-data">
+                        <input type="hidden" name="adulto_id" value="{{ datos.adulto.id }}">
+                        
+                        <label for="nombre_planta_{{ etapa.id }}">🌱 Nombre de la Planta:</label>
+                        <input type="text" name="nombre_planta" id="nombre_planta_{{ etapa.id }}"
+                            value="{{ etapa.nombre }}" required><br><br>
+
+                        <label for="descripcion_etapa_{{ etapa.id }}">📝 Descripción de la Etapa:</label>
+                        <textarea name="descripcion_etapa" id="descripcion_etapa_{{ etapa.id }}"
+                            required>{{ etapa.descripcion }}</textarea><br><br>
+
+                        <label for="imagen_etapa_{{ etapa.id }}">📷 Imagen de la Etapa (opcional):</label>
+                        <input type="file" name="imagen_etapa" id="imagen_etapa_{{ etapa.id }}"
+                            accept="image/*"><br><br>
+
+                        <button type="submit" class="boton-agregar">💾 Guardar Cambios</button>
+                    </form>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p>No hay plantas registradas para este adulto mayor.</p>
+        {% endif %}
+    </div>
+    {% endfor %}
+    {% endif %}
+</div>
+
+<script>
+    function togglePlantas(adultoId) {
+        const lista = document.getElementById('plantas-' + adultoId);
+        lista.style.display = (lista.style.display === 'none' || lista.style.display === '') ? 'block' : 'none';
+    }
+
+    function toggleEditForm(etapaId) {
+        const form = document.getElementById(`edit-form-${etapaId}`);
+        if (form.style.display === "none" || form.style.display === "") {
+            form.style.display = "block";
+        } else {
+            form.style.display = "none";
+        }
+    }
+
+
+
+    function confirmDeletion() {
+        return confirm("¿Estás seguro de que deseas eliminar esta planta?");
+    }
+
+    function showSuccessMessage() {
+        alert("La planta ha sido eliminada exitosamente.");
+    }
+
+
+</script>
+{% endblock %}

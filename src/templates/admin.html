@@ -1,0 +1,198 @@
+{% extends "./layout.html" %}
+
+{% block titulo %}
+Usuarios
+{% endblock %}
+
+{% block estilos %}
+<style>
+    body {
+        background-color: #FFFFFF;
+        /* Fondo blanco */
+        color: #00712D;
+        /* Texto negro */
+        font-family: 'Arial', sans-serif;
+    }
+
+    h1 {
+        text-align: center;
+        margin-bottom: 30px;
+        font-size: 2.5em;
+        color: #00712D; /* Verde oscuro */
+        text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+        animation: fadeIn 1s ease;
+    }
+
+    h2 {
+        margin-top: 40px;
+        font-size: 2em;
+        color: #000000; /* Negro */
+        border-bottom: 2px solid #00712D; /* Verde oscuro */
+        padding-bottom: 10px;
+        animation: fadeIn 1s ease;
+    }
+
+    /* Emojis en los títulos */
+    h2:before {
+        content: attr(data-emoji);
+        margin-right: 10px;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        border-radius: 10px;
+        overflow: hidden;
+        opacity: 0;
+        animation: slideIn 0.5s forwards;
+    }
+
+    th, td {
+        padding: 15px;
+        text-align: center; /* Centrar texto en encabezados y celdas */
+        color: black; /* Texto negro en las celdas */
+    }
+
+    th {
+        background-color: #00712D; /* Verde oscuro */
+        color: #FFFFFF; /* Texto blanco en encabezados */
+    }
+
+    tr:nth-child(even) {
+        background-color: #EAF2F8; /* Filas alternas */
+    }
+
+    tr:hover {
+        background-color: #6EC207; /* Color al pasar el mouse (verde claro) */
+        transition: background-color 0.3s;
+    }
+
+    button {
+        background-color: #00712D; /* Verde oscuro */
+        color: white;
+        border: none;
+        border-radius: 5px;
+        padding: 10px 15px;
+        cursor: pointer;
+        transition: background-color 0.3s, transform 0.3s;
+    }
+
+    button:hover {
+        background-color: #FF5733; /* Color diferente al pasar el mouse (rojo) */
+        transform: scale(1.05);
+    }
+
+    .acciones {
+        display: flex;
+        gap: 10px;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
+    @keyframes slideIn {
+        from { transform: translateY(-20px); opacity: 0; }
+        to { transform: translateY(0); opacity: 1; }
+    }
+</style>
+{% endblock %}
+
+{% block contenido %}
+<div class="container">
+    <h1>Panel de Administración</h1>
+
+    <!-- Mostrar mensajes flash -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div class="flash-messages">
+        {% for category, message in messages %}
+        <div class="alert alert-{{ category }}">{{ message }}</div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% endwith %}
+
+    {% if session['user_role'] in ['admin'] %}
+    <h2 data-emoji="👨‍🏫">Profesores</h2>
+    <table id="profesoresTable">
+        <tr>
+            <th>Nombre</th>
+            <th>Email</th>
+            <th>Acciones</th>
+        </tr>
+        {% for usuario in usuarios_profesores %}
+        <tr>
+            <td>{{ usuario.nombre }}</td>
+            <td>{{ usuario.email }}</td>
+            <td class="acciones">
+                {% if not usuario.aceptado %}
+                <form action="/aceptar/{{ usuario.id }}" method="POST">
+                    <button type="submit">Aceptar</button>
+                </form>
+                {% endif %}
+                <form action="/eliminar/{{ usuario.id }}" method="POST" onsubmit="return confirmarEliminacion()">
+                    <button type="submit">Eliminar</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% endif %}
+    
+    <h2 data-emoji="👨‍🎓">Estudiantes</h2>
+    <table id="estudiantesTable">
+        <tr>
+            <th>Nombre</th>
+            <th>Email</th>
+            <th>Acciones</th>
+        </tr>
+        {% for usuario in usuarios_estudiantes %}
+        <tr>
+            <td>{{ usuario.nombre }}</td>
+            <td>{{ usuario.email }}</td>
+            <td class="acciones">
+                {% if not usuario.aceptado %}
+                <form action="/aceptar/{{ usuario.id }}" method="POST">
+                    <button type="submit">Aceptar</button>
+                </form>
+                {% endif %}
+                <form action="/eliminar/{{ usuario.id }}" method="POST" onsubmit="return confirmarEliminacion()">
+                    <button type="submit">Eliminar</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+{% endblock %}
+
+
+{% block js %}
+<script>
+    window.onload = function () {
+        const profesoresTable = document.getElementById('profesoresTable');
+        const estudiantesTable = document.getElementById('estudiantesTable');
+
+        profesoresTable.style.opacity = 1;
+        estudiantesTable.style.opacity = 1;
+
+        // Configuración para ocultar mensajes flash después de 5 segundos
+        const flashMessages = document.querySelector('.flash-messages');
+        if (flashMessages) {
+            setTimeout(() => {
+                flashMessages.style.transition = 'opacity 0.5s';
+                flashMessages.style.opacity = '0';
+                setTimeout(() => flashMessages.style.display = 'none', 500);
+            }, 5000);  // 5000 ms = 5 segundos
+        }
+    };
+
+    function confirmarEliminacion() {
+        return confirm("¿Estás seguro de que deseas eliminar este usuario?");
+    }
+</script>
+{% endblock %}

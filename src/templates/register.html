@@ -1,0 +1,165 @@
+{% extends "./sesion.html" %}
+
+{% block titulo %}
+Registro
+{% endblock %}
+
+{% block header %}
+{% endblock %}
+
+{% block estilos %}
+<style>
+    .btn {
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .btn:hover {
+        background-color: #fff;
+        color: #007bff;
+    }
+
+    .formulario-borde {
+        border-radius: 5px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+    }
+
+    .container {
+        border: 2px solid #ffffff;
+        border-radius: 10px;
+        padding: 20px;
+        background-color: rgba(0, 0, 0, 0.6);
+        color: #fff;
+        max-width: 400px;
+        width: 100%;
+    }
+
+    .formulario {
+        width: 100%;
+        max-width: 400px;
+        border: 1px solid white;
+        padding: 20px;
+    }
+
+    .btn-autenticarse {
+        padding: 10px 20px;
+        background-color: #000;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .btn-autenticarse:hover {
+        background-color: #fff;
+        color: dimgrey;
+    }
+
+    body {
+        background-image: url("{{ url_for('static', filename='imagenes/horticultura.png') }}");
+        object-fit: initial;
+    }
+</style>
+{% endblock %}
+
+{% block contenido %}
+<section class="formulario-borde">
+    <div class="container">
+        {% if error_message %}
+        <div class="alert alert-danger">
+            <br><br>
+            <br>
+            <button type="button" class="btn-close" aria-label="Cerrar" onclick="hideErrorMessage()"></button>
+            <span>{{ error_message }}</span>
+        </div>
+        {% endif %}
+        <form class="formulario mx-auto" id="registerForm" action="{{ url_for('register') }}" method="post">
+            <h2 class="fw-bold text-white text-center">Registro</h2>
+            <div class="mb-3 py-1">
+                <input type="text" class="form-control form-control-lg" id="nombre" name="nombre"
+                    placeholder="Nombre Completo" required>
+            </div>
+            <div class="mb-3 py-1">
+                <input type="email" class="form-control form-control-lg" id="email" name="email"
+                    placeholder="Correo Electrónico" required>
+            </div>
+            <div class="mb-3 py-1">
+                <select class="form-control form-control-lg" id="rol" name="rol" required>
+                    <option value="">Selecciona el rol</option>
+                    <option value="profesor">Profesor</option>
+                    <option value="estudiante">Estudiante</option>
+                </select>
+            </div>
+            <div class="mb-3 py-1">
+                <input type="password" class="form-control form-control-lg" id="password" name="password"
+                    placeholder="Contraseña" required>
+            </div>
+            <div class="mb-3 py-1">
+                <input type="password" class="form-control form-control-lg" id="confirmPassword"
+                    placeholder="Confirmar Contraseña" required>
+            </div>
+            <div class="mb-3">
+                <button type="submit" class="btn btn-primary w-100 mb-2 form-control-lg fw-bold">Registrarse</button>
+            </div>
+            <hr class="w-100 mb-4 text-white fw-bold">
+            <div class="text-center">
+                <div id="errorFrame" class="alert alert-danger" style="display: none;">
+                    <p id="errorText" class="text-danger">Error en el registro</p>
+                </div>
+                <p class="text-white fw-bold">¿Ya tienes una cuenta?<span class="text-success"></span> <a
+                        href="{{ url_for('login') }}" class="text-success">Iniciar sesión</a></p>
+            </div>
+        </form>
+    </div>
+</section>
+
+{% endblock %}
+
+{% block js %}
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const form = document.querySelector("#registerForm");
+        const password = document.querySelector("#password");
+        const confirmPassword = document.querySelector("#confirmPassword");
+        const email = document.querySelector("#email");
+
+        form.addEventListener("submit", function (event) {
+            let errorMessage = "";
+
+            // Validación de contraseña
+            const passwordValue = password.value;
+            const confirmPasswordValue = confirmPassword.value;
+            const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[-*+@#$%]).{8,}$/;
+
+            if (!passwordRegex.test(passwordValue)) {
+                errorMessage += "La contraseña debe tener al menos 8 caracteres, incluyendo letras, números y un carácter especial (-,*,+,@,$,#,%).\n";
+            }
+
+            if (passwordValue !== confirmPasswordValue) {
+                errorMessage += "Las contraseñas no coinciden.\n";
+            }
+
+            // Validación de correo
+            const emailRegex = /^[a-zA-Z0-9._%+-]+@ucundinamarca\.edu\.co$/;
+
+            if (!emailRegex.test(email.value)) {
+                errorMessage += "Solo se aceptan correos con el dominio @ucundinamarca.edu.co.\n";
+            }
+
+            if (errorMessage) {
+                event.preventDefault();
+                alert(errorMessage);
+            }
+        });
+    });
+</script>
+{% endblock %}

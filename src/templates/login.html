@@ -1,0 +1,147 @@
+{% extends "./sesion.html" %}
+
+{% block titulo %}
+Inicio de sesión
+{% endblock %}
+
+
+{% block estilos %}
+<style>
+    .btn {
+        padding: 10px 20px;
+        background-color: #007bff;
+        /* Color de fondo predeterminado */
+        color: #fff;
+        /* Color de texto predeterminado */
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        /* Transición de color de fondo */
+    }
+
+    /* Estilos para cambiar el color de fondo al pasar el cursor */
+    .btn:hover {
+        background-color: #fff;
+        /* Cambiar a blanco cuando se pasa el cursor */
+        color: #007bff;
+        /* Cambiar el color de texto a azul */
+    }
+
+    .formulario-borde {
+
+
+        border-radius: 5px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+
+
+    }
+
+    .formulario {
+        width: 100%;
+        max-width: 400px;
+        /* Ajusta este valor según tus necesidades */
+        border: 1px solid white;
+        padding: 20px;
+    }
+
+    .btn-autenticarse {
+        padding: 10px 20px;
+        background-color: #000;
+        /* Color de fondo gris */
+        color: #fff;
+        /* Color de texto blanco */
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        /* Transición de color de fondo */
+    }
+
+    /* Estilos para cambiar el color de fondo al pasar el cursor */
+    .btn-autenticarse:hover {
+        background-color: #fff;
+        /* Cambiar a blanco cuando se pasa el cursor */
+        color: dimgrey;
+        /* Cambiar el color de texto a gris */
+
+    }
+
+    .container {
+        border: 2px solid #ffffff;
+        /* Borde blanco de 2px */
+        border-radius: 10px;
+        padding: 20px;
+        background-color: rgba(0, 0, 0, 0.6);
+        /* Fondo semi-transparente */
+        color: #fff;
+        /* Texto blanco */
+        max-width: 400px;
+        width: 100%;
+    }
+
+    .btn-autenticarse {
+        text-decoration: none;
+    }
+
+    body {
+        background-image: url("{{ url_for('static', filename='imagenes/horticultura.png') }}");
+        object-fit: initial;
+
+    }
+</style>
+{% endblock %}
+
+{% block contenido %}
+<section class="formulario-borde">
+    <div class="container">
+        {% if error_message %}
+        <div class="alert alert-danger">
+            <button type="button" class="btn-close" aria-label="Cerrar" onclick="hideErrorMessage()"></button>
+            <span>{{ error_message }}</span>
+        </div>
+        {% endif %}
+
+        <form class="formulario mx-auto" action="{{ url_for('login') }}" method="post"
+            onsubmit="return validarCorreo()">
+            <h2 class="fw-bold text-white text-center">Iniciar sesión en tu cuenta</h2>
+            <div class="mb-3 py-3">
+                <input type="email" class="form-control form-control-lg" id="email" name="email" placeholder="Email"
+                    oninput="hideErrorMessage()">
+            </div>
+            <div class="mb-3">
+                <input type="password" class="form-control form-control-lg" name="password" placeholder="Contraseña">
+            </div>
+            <div class="mb-3">
+                <button type="submit" class="btn btn-primary w-100 mb-2 form-control-lg fw-bold"
+                    onclick="limpiarCampos()">Iniciar sesión</button>
+                <div class="text-end">
+                    <a href="{{ url_for('forgot_password') }}" class="text-success">¿Olvidaste tu contraseña?</a>
+                </div>
+            </div>
+            <hr class="w-100 mb-4 text-white border-1">
+            <div class="text-center">
+                <p class="text-white fw-bold">¿No tienes una cuenta? <a href="{{ url_for('register') }}"
+                        class="text-success">Regístrate</a></p>
+            </div>
+        </form>
+    </div>
+</section>
+{% endblock %}
+
+{% block js %}
+<script>
+
+    function hideErrorMessage() {
+        const errorAlert = document.querySelector('.alert-danger');
+        if (errorAlert) {
+            errorAlert.style.display = 'none';
+        }
+    }
+    
+
+</script>
+{% endblock %}

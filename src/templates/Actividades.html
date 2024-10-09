@@ -1,0 +1,394 @@
+{% extends 'layout.html' %}
+
+{% block titulo %}
+Actividades
+{% endblock %}
+
+{% block estilos %}
+<style>
+    body {
+        font-family: 'Arial', sans-serif;
+        background: #f7f9f9;
+        color: #333;
+    }
+
+    h1 {
+        color: #2e7d32;
+        font-size: 2.8rem;
+        font-weight: bold;
+        text-align: center;
+        margin-bottom: 25px;
+        position: relative;
+        animation: fadeInDown 1s ease-out;
+    }
+
+    .actividades {
+        margin-bottom: 30px;
+        padding: 20px;
+        border: 2px solid #4caf50;
+        border-radius: 15px;
+        background-color: #f1f8e9;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .actividades:hover {
+        transform: scale(1.02);
+        box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.15);
+    }
+
+    .detalles {
+        display: none;
+        margin-top: 15px;
+        background-color: #c8e6c9;
+        padding: 15px;
+        border-radius: 10px;
+        border-left: 5px solid #388e3c;
+    }
+
+    /* Botón animado con gradiente */
+    #btn-crear-actividad {
+        background: linear-gradient(135deg, #43a047, #66bb6a);
+        color: white;
+        border: none;
+        padding: 12px 25px;
+        cursor: pointer;
+        font-size: 1.3rem;
+        border-radius: 50px;
+        transition: all 0.4s ease;
+        display: block;
+        margin: 20px auto;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    #btn-crear-actividad:hover {
+        transform: translateY(-8px);
+        background: linear-gradient(135deg, #388e3c, #43a047);
+        box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Transición suave para el formulario */
+    #formulario-crear-actividad {
+        display: none;
+        background-color: #ffffff;
+        padding: 25px;
+        border-radius: 15px;
+        border: 1px solid #e0e0e0;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        animation: slideDown 0.5s ease-out;
+        margin-bottom: 20px;
+    }
+
+    form label {
+        font-weight: bold;
+        display: block;
+        margin-bottom: 5px;
+        color: #333;
+    }
+
+    form input[type="text"],
+    form textarea,
+    form input[type="file"] {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 15px;
+        border-radius: 8px;
+        border: 1px solid #cccccc;
+        background-color: #f7f7f7;
+        transition: border-color 0.3s ease;
+    }
+
+    form input[type="text"]:focus,
+    form textarea:focus {
+        border-color: #66bb6a;
+    }
+
+    input[type="submit"] {
+        background-color: #66bb6a;
+        color: white;
+        border: none;
+        padding: 12px 25px;
+        border-radius: 50px;
+        cursor: pointer;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+    }
+
+    input[type="submit"]:hover {
+        background-color: #43a047;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
+    }
+
+    @keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes fadeInDown {
+        from {
+            opacity: 0;
+            transform: translateY(-50px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Lista de actividades */
+    .actividades ul {
+        list-style-type: none;
+        padding-left: 0;
+    }
+
+    .actividades li {
+        padding: 10px;
+        background-color: #ffffff;
+        border-radius: 10px;
+        box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+        margin-bottom: 10px;
+        transition: background-color 0.3s ease;
+    }
+
+    .actividades li:hover {
+        background-color: #e8f5e9;
+    }
+
+    .parallax-img {
+        max-width: 100%;
+        height: auto;
+        margin-bottom: 20px;
+    }
+
+    /* Estilo para los enlaces de actividades */
+    .actividades a {
+        color: #000;
+        /* Color de letra negra */
+        text-decoration: none;
+        /* Sin subrayado */
+        font-weight: bold;
+        border: 1px solid transparent;
+        /* Borde transparente por defecto */
+        padding: 5px;
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    /* Estilo al pasar el cursor por encima */
+    .actividades a:hover {
+        border-color: #4caf50;
+        /* Contorno verde */
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        /* Sombra suave */
+    }
+
+    .action-buttons {
+        display: flex;
+        /* Usa flexbox para alinear los botones horizontalmente */
+        justify-content: center;
+        /* Centra los botones horizontalmente */
+        gap: 15px;
+        /* Espacio entre los botones */
+        margin-top: 10px;
+        /* Margen superior para separación */
+    }
+
+    .edit-button,
+    .delete-button {
+        background: linear-gradient(135deg, #66bb6a, #388e3c);
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 25px;
+        /* Bordes redondeados */
+        cursor: pointer;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        /* Transición suave para hover */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .edit-button:hover,
+    .delete-button:hover {
+        transform: translateY(-4px);
+        /* Sube un poco al pasar el mouse */
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        /* Sombra más intensa al hover */
+    }
+
+    .delete-button {
+        background: linear-gradient(135deg, #ef5350, #c62828);
+        /* Color rojo para eliminar */
+    }
+</style>
+{% endblock %}
+
+{% block contenido %}
+<div>
+    <h1>Actividades</h1>
+    <img src="{{ url_for('static', filename='imagenes/riego.jpg') }}" alt="Horticultura"
+        class="img-fluid mx-auto d-block parallax-img">
+    <p>
+        La horticultura terapéutica para adultos mayores es ampliamente valorada por expertos debido a su impacto
+        positivo en el bienestar físico, mental y emocional de las personas. Según investigaciones científicas, la
+        participación en actividades de jardinería ayuda a mejorar la salud mental al reducir el estrés, la ansiedad y
+        la depresión, al tiempo que promueve un sentido de propósito y conexión con la naturaleza.
+    </p>
+    <p>Desde el punto de vista físico, la horticultura puede contribuir a mejorar la movilidad, la fuerza y la
+        coordinación, aspectos importantes en la salud de los adultos mayores. Además, la exposición al aire libre y a
+        la luz solar puede incrementar los niveles de vitamina D y mejorar el estado de ánimo. Los expertos señalan
+        también que este tipo de terapia fomenta la estimulación cognitiva, al requerir planificación, toma de
+        decisiones y cuidado constante.</p>
+</div>
+
+<hr>
+
+{% if session['user_role'] in ['profesor'] %}
+<!-- Botón para crear nueva actividad -->
+<button id="btn-crear-actividad">Crear Actividad</button>
+{% endif %}
+
+<!-- Formulario para crear nueva actividad -->
+<div id="formulario-crear-actividad">
+    <h3>Crear Nueva Actividad</h3>
+    <form action="/actividades" method="POST" enctype="multipart/form-data">
+        <label for="nombre">Nombre de la Actividad:</label>
+        <input type="text" id="nombre" name="nombre" required>
+
+        <label for="objetivo">Objetivo:</label>
+        <textarea id="objetivo" name="objetivo" required></textarea>
+
+        <label for="materiales">Materiales:</label>
+        <textarea id="materiales" name="materiales" required></textarea>
+
+        <label for="instrucciones">Instrucciones:</label>
+        <textarea id="instrucciones" name="instrucciones" required></textarea>
+
+        <label for="archivo">Subir archivo (opcional):</label>
+        <input type="file" id="archivo" name="archivo" accept=".pdf">
+
+        <input type="submit" value="Crear Actividad">
+    </form>
+</div>
+
+<hr>
+
+<!-- Mostrar actividades de profesores -->
+<div id="actividades-container">
+    {% for profesor in profesores %}
+    <div class="actividades">
+        <h3 onclick="mostrarActividades('{{ profesor.id }}')">Actividades de {{ profesor.nombre }}</h3>
+        <ul id="actividades-{{ profesor.id }}" style="display: none;">
+            {% if actividades_por_profesor[profesor.id] %}
+            {% for actividad in actividades_por_profesor[profesor.id] %}
+            <li>
+                <a href="javascript:void(0)" onclick="mostrarDetalles('{{ actividad.id }}')">{{ actividad.nombre }}</a>
+                <div id="detalle-{{ actividad.id }}" class="detalles">
+                    <h4 class="text-center">Detalles de {{ actividad.nombre }}</h4>
+                    <p><strong>Objetivo:</strong> {{ actividad.objetivo }}</p>
+                    <p><strong>Materiales:</strong> {{ actividad.materiales }}</p>
+                    <p><strong>Instrucciones:</strong> {{ actividad.instrucciones }}</p>
+
+                    {% if actividad.archivo %}
+                    <p><strong>Archivo:</strong> <a href="{{ actividad.archivo }}" target="_blank">Descargar</a></p>
+                    {% endif %}
+
+                    <!-- Botones de eliminar y editar -->
+                    <!-- Botones de eliminar y editar -->
+                    {% if session['user_role'] in ['profesor', 'admin'] %}
+                    <div class="action-buttons">
+                        <form
+                            action="{{ url_for('eliminar_actividad', profesor_id=profesor.id, actividad_id=actividad.id) }}"
+                            method="post" onclick="return confirmDeletion();">
+                            <button type="submit" class="delete-button">Eliminar</button>
+                        </form>
+                        <button type="submit" class="edit-button"
+                            onclick="toggleEditForm('{{ actividad.id }}', '{{ actividad.nombre }}', '{{ actividad.objetivo }}', '{{ actividad.materiales }}', '{{ actividad.instrucciones }}')">Editar</button>
+                    </div>
+                    {% endif %}
+                    <br>
+
+                    <!-- Formulario para editar actividad -->
+                    <div id="formulario-editar-{{ actividad.id }}" style="display: none;">
+                        <h4>Editar Actividad</h4>
+                        <form
+                            action="{{ url_for('editar_actividad', profesor_id=profesor.id, actividad_id=actividad.id) }}"
+                            method="POST" enctype="multipart/form-data">
+                            <label for="nombre">Nombre de la Actividad:</label>
+                            <input type="text" name="nombre" value="{{ actividad.nombre }}" required>
+
+                            <label for="objetivo">Objetivo:</label>
+                            <textarea name="objetivo" required>{{ actividad.objetivo }}</textarea>
+
+                            <label for="materiales">Materiales:</label>
+                            <textarea name="materiales" required>{{ actividad.materiales }}</textarea>
+
+                            <label for="instrucciones">Instrucciones:</label>
+                            <textarea name="instrucciones" required>{{ actividad.instrucciones }}</textarea>
+
+                            <label for="archivo_{{actividad.id}}">Subir archivo (opcional):</label>
+                            <input type="file" id="archivo_{{actividad.id}}" name="archivo" accept=".pdf">
+
+                            <input type="submit" value="Actualizar Actividad">
+                        </form>
+                    </div>
+
+                </div>
+            </li>
+            {% endfor %}
+            {% else %}
+            <li>No hay actividades para este profesor.</li>
+            {% endif %}
+        </ul>
+    </div>
+    {% endfor %}
+</div>
+
+
+<script>
+    function mostrarActividades(profesorId) {
+        const actividadesList = document.getElementById(`actividades-${profesorId}`);
+        actividadesList.style.display = actividadesList.style.display === 'none' ? 'block' : 'none';
+    }
+
+    function mostrarDetalles(actividadId) {
+        const detalles = document.getElementById(`detalle-${actividadId}`);
+        detalles.style.display = detalles.style.display === 'none' ? 'block' : 'none';
+    }
+
+    document.getElementById('btn-crear-actividad').addEventListener('click', function () {
+        const formulario = document.getElementById('formulario-crear-actividad');
+        formulario.style.display = formulario.style.display === 'none' ? 'block' : 'none';
+    });
+
+    function confirmDeletion() {
+        return confirm("¿Estás seguro de que deseas eliminar esta actividad?");
+    }
+
+    function toggleEditForm(actividadId, nombre, objetivo, materiales, instrucciones) {
+        const formulario = document.getElementById(`formulario-editar-${actividadId}`);
+        const isDisplayed = formulario.style.display === 'block';
+
+        // Toggle the form display
+        formulario.style.display = isDisplayed ? 'none' : 'block';
+
+        // Optionally, you could set the values if needed
+        if (!isDisplayed) {
+            // Set values in the form if necessary
+            formulario.querySelector('input[name="nombre"]').value = nombre;
+            formulario.querySelector('textarea[name="objetivo"]').value = objetivo;
+            formulario.querySelector('textarea[name="materiales"]').value = materiales;
+            formulario.querySelector('textarea[name="instrucciones"]').value = instrucciones;
+        }
+    }
+
+</script>
+
+{% endblock %}
